@@ -1,6 +1,7 @@
 # BallBeamRL
 
 Create conda environment on terminal: **conda create -n myenv python=3.8.10**
+
 Activate conda environment: **conda activate myenv**
 
 Clone repo and cd: **pip install -e .**
