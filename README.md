@@ -1,8 +1,8 @@
 # BallBeamRL
 
-Create conda environment on terminal: conda create -n myenv python=3.8.10
-Clone repo and cd: pip install -e .
-Run: python main.py 
+Create conda environment on terminal: **conda create -n myenv python=3.8.10**
+Clone repo and cd: **pip install -e .**
+Run: **python main.py **
 
 main.py: script to run RL model for a certain number of runs, saves models, and figures
 
