@@ -20,6 +20,52 @@ import random
 import gym 
 import math
 
+import numpy as np
+def create_uniform_grid(low, high, bins=(10, 10)):
+    """Define a uniformly-spaced grid that can be used to discretize a space.
+
+    Parameters
+    ----------
+    low : array_like
+        Lower bounds for each dimension of the continuous space.
+    high : array_like
+        Upper bounds for each dimension of the continuous space.
+    bins : tuple
+        Number of bins along each corresponding dimension.
+
+    Returns
+    -------
+    grid : list of array_like
+        A list of arrays containing split points for each dimension.
+    """
+    # TODO: Implement this
+    grids = []
+    for l, h, n in zip(low, high, bins):
+        grids.append(np.linspace(l, h, num=n, endpoint=False)[1:])
+
+    return grids
+
+def discretize(sample, grid):
+    """Discretize a sample as per given grid.
+
+    Parameters
+    ----------
+    sample : array_like
+        A single sample from the (original) continuous space.
+    grid : list of array_like
+        A list of arrays containing split points for each dimension.
+
+    Returns
+    -------
+    discretized_sample : array_like
+        A sequence of integers with the same number of dimensions as sample.
+    """
+    # TODO: Implement this
+    digitized = []
+    for s, g in zip(sample, grid):
+        digitized.append(np.digitize(s, g))
+    return digitized
+
 class BallBeamBotPybullet:
     def __init__(self, gui, random_ball_pos):
         """class to spawn in and control bot
@@ -158,53 +204,24 @@ class BallBeamBotPybullet:
         #return np.array(result, dtype=object)[:, 2], current_angle, dict()
         #return np.array([result, ray_angle])
 
+low = [0, -0.2]
+high = [0.75, 0.2]
+grid = create_uniform_grid(low, high)  # [test]
+
 if __name__=='__main__':
-    np_random, _ = gym.utils.seeding.np_random()
-    # limits for the ball being dropped on the beam (x direction)
-    num = np_random.uniform(-0.4, 0.25)
-    print("num is ")
-    print(num)
-    # for i in range(50):
-    #     print("random value is")
-    #     print(np_random)
-    #     num = np_random.uniform(-0.4, 0.25)
-    #     print("num is ")
-    #     print(num)
-    # ins = input("hey")
-    num=-0.4
+    num = -0.4
     bot = BallBeamBotPybullet(True, num)
     angle = p.addUserDebugParameter("Motor", -0.2, 0.2, 0)
-    angle_choices = [-1, 0, 1]
-
-    # for i in range(100):
-    #     print("in for loop")
-    #     p.stepSimulation()
     
-    #read = p.readUserDebugParameter(angle)
-    # read = bot.get_observation()
-    # print("ANGLE IS")
-    # print(read)
-    # read = round(read,3)
-    # print("Rounded is ")
-    # print(read)
-    actions = [-1, 0, 1]
-    count = 0
     while(True):
-        # print("NEW ITERATION")
-        # print("OBS before action [Position, Angle]")
-        # obs = bot.get_observation()
-        # print(obs)
-        # action = random.choice(actions)
-        # bot.apply_action(action)
         read = p.readUserDebugParameter(angle)
-        # print("NEW iteration")
-        # act = random.choice(angle_choices)
         bot.apply_action(read)
         p.stepSimulation()
-        obs = bot.get_observation()
+        pos, ang = bot.get_observation()
+        obs = [pos, ang]
+        obs = np.array(obs)
         print("OBSERVATION IS POSITION, CURRENT ANGLE: ")
         print(obs)
-        #obs = round(obs,3)
-        #print("ROUNDED OBSERVATION IS")
-        #print(obs)
+        print("DISCRETIZED OBSERVATION IS POSITION, CURRENT ANGLE: ")
+        print(discretize(obs, grid))
         time.sleep(1. / 240)

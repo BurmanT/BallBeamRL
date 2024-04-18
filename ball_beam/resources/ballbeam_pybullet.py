@@ -91,26 +91,48 @@ class BallBeamBotPybullet:
         timesteps_setpoint = 0
         total_timesteps = 0
         current_angle = self.get_current_angle()
+        #print("current agnle is ")
+        #print(current_angle)
+        #print("delta is " + str(self.delta))
+        #print("action is ")
+        #print(action)
         position = self.delta*action + current_angle
+        #print("desired position is ")
+        #print(position)
         # print("CURRENT ANGLE " + str(current_angle))
         # print("ANGLE TO TAKE " + str(position))
-        for i in range(100):
-            p.setJointMotorControl2(
-            self.bot, 1, p.POSITION_CONTROL, targetPosition=position, force=100
-            )
-            p.stepSimulation()
-            if((i % 20 == 0) and self.save_img):
-                px = self.camera()
-                img_arr.append(px)
-            if(self.gui):
-                time.sleep(1./240)
-            if(self.within_setpoint()):
-                timesteps_setpoint += 1
-            if(math.isclose(position, self.get_current_angle(), abs_tol=self.threshold)):
-                # print("ANG EQUAL POS STOPPING AT i " + str(i))
-                total_timesteps = i
-                return img_arr, timesteps_setpoint, total_timesteps
-        total_timesteps = 100
+        # step through the simulation even if action is 0
+        if(action == 0):
+            for i in range(51):
+                p.setJointMotorControl2(
+                self.bot, 1, p.POSITION_CONTROL, targetPosition=position, force=100
+                )
+                p.stepSimulation()
+                if((i % 20 == 0) and self.save_img):
+                    px = self.camera()
+                    img_arr.append(px)
+                if(self.gui):
+                    time.sleep(1./240)
+                if(self.within_setpoint()):
+                    timesteps_setpoint += 1
+        else:
+            for i in range(55):
+                p.setJointMotorControl2(
+                self.bot, 1, p.POSITION_CONTROL, targetPosition=position, force=100
+                )
+                p.stepSimulation()
+                if((i % 20 == 0) and self.save_img):
+                    px = self.camera()
+                    img_arr.append(px)
+                if(self.gui):
+                    time.sleep(1./240)
+                if(self.within_setpoint()):
+                    timesteps_setpoint += 1
+                if(math.isclose(position, self.get_current_angle(), abs_tol=self.threshold)):
+                    #print("ANG EQUAL POS STOPPING AT i " + str(i))
+                    total_timesteps = i
+                    return img_arr, timesteps_setpoint, total_timesteps
+            total_timesteps = 55
         # print("COMPLETED 100 TIMESTEPS")
         return img_arr, timesteps_setpoint, total_timesteps
 

@@ -39,9 +39,13 @@ class BallBeamEnv(gym.Env):
         # action space is -1, 0, 1
         self.action_space = gym.spaces.Discrete(3, start=-1)
         # position of ball, change in position, angle of beam 
+        #self.observation_space = gym.spaces.box.Box(
+        #    low=np.array([0, -1, -0.2], dtype=np.float32),
+        #    high=np.array([1, 1, 0.2], dtype=np.float32),
+        #)
         self.observation_space = gym.spaces.box.Box(
-            low=np.array([0, -1, -0.2], dtype=np.float32),
-            high=np.array([1, 1, 0.2], dtype=np.float32),
+            low=np.array([0, -0.5, -0.2], dtype=np.float32),
+            high=np.array([0.75, 0.5, 0.2], dtype=np.float32),
         )
         # used to set random position of ball
         self.np_random, _ = gym.utils.seeding.np_random()
@@ -120,10 +124,11 @@ class BallBeamEnv(gym.Env):
             # print("WITHIN SETPOINT " + str(new_position))
             # print("Goal is " + str(self.goal)+ " LOWER IS "+ str(lower)+" HIGHER IS "+str(higher))
             reward = self.reward_type[0]
-        elif(abs(self.prev_dist_to_goal) > abs(dist_to_goal)):
-            # print("Previous Distant to goal is " + str(self.prev_dist_to_goal))
-            # print("Distance to goal is " + str(dist_to_goal))
-            # print("GETTING CLOSER")
+        # second portion of statement ensures that amount moved is significant 
+        elif(abs(self.prev_dist_to_goal) > abs(dist_to_goal) and abs(abs(self.prev_dist_to_goal) - abs(dist_to_goal) >= 0.01)):
+            #print("Previous Distant to goal is " + str(self.prev_dist_to_goal))
+            #print("Distance to goal is " + str(dist_to_goal))
+            #print("GETTING CLOSER")
             reward = self.reward_type[1]
         else:
             reward = self.reward_type[2]
