@@ -331,7 +331,7 @@ def main(num_runs, episodes, rew, bin_ind):
     random_seeds = [10, 20, 30, 40, 50]
     for i in range(num_runs):
         gui = False
-        timesteps = 10
+        timesteps = 100
         env = gym.make('BallBeam-v0', gui=gui, timesteps=timesteps, reward_type=reward_type)
         state_grid = create_uniform_grid(env.observation_space.low, env.observation_space.high, bins=bin)
         q_agent = QLearningAgent(env, state_grid, seed=random_seeds[i])
@@ -370,6 +370,6 @@ if __name__ == "__main__":
         rew = sys.argv[1]
         bins = sys.argv[2]
     num_runs = 5
-    episodes = 5
+    episodes = 5000
     main(num_runs, episodes, rew, bins)
     
